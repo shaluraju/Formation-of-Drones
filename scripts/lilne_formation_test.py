@@ -1,4 +1,5 @@
 
+
 """
 Created on Mon Sep 20 10:48:53 2021
 
@@ -8,17 +9,17 @@ Created on Mon Sep 20 10:48:53 2021
 from TelloServer import SWARM, Telloserver
 import numpy as np
 from Shape_vectors import LineFormation
-from PID import DronePID 
-# Connection
-#----------------------------------------------------------------------------
-wifi_interfaces = ["wlx9cefd5fb6d70",
-                    "wlx9cefd5fb6d84"
+# import time
+from PID import PID
+
+wifi_interfaces = ["wlx9cefd5fb6d84",
+                   "wlx9cefd5fb774c"
                     #"wlx9cefd5faea28",
                    #"wlx9cefd5fae83e"
                    ]
 
-droneslist = ['Tello6',
-              'Tello5'
+droneslist = ['Tello4',
+              'Tello1'
               #'Tello3'
              ]
 
@@ -28,64 +29,144 @@ allDrones = swarm.allDrones
 rosClock = swarm.rosClock()
 
 GroundTruth = swarm.MotionCaptureGroundTruth()
+
+# =======================================================
+# Initialize the PID controllers
+
+drone1PIDx = PID(Kp=200, Kd=150, Ki=0.0,
+                  derivativeFilterFreq=15,
+                  minOutput = -100, maxOutput = 100,
+                  current_time = None)
+
+drone1PIDy = PID(Kp=400, Kd=170, Ki=0.0,
+                  derivativeFilterFreq=15,
+                  minOutput = -100, maxOutput = 100,
+                  current_time = None)
+
+drone1PIDz = PID(Kp=300, Kd=130, Ki=0.0,
+                  derivativeFilterFreq=15,
+                  minOutput = -100, maxOutput = 100,
+                  current_time = None)
+
+# =========
+
+drone2PIDx = PID(Kp=200, Kd=150, Ki=0.0,
+                  derivativeFilterFreq=15,
+                  minOutput = -100, maxOutput = 100,
+                  current_time = None)
+
+drone2PIDy = PID(Kp=400, Kd=170, Ki=0.0,
+                  derivativeFilterFreq=20,
+                  minOutput = -100, maxOutput = 100,
+                  current_time = None)
+
+drone2PIDz = PID(Kp=300, Kd=130, Ki=0.0,
+                  derivativeFilterFreq=15,
+                  minOutput = -100, maxOutput = 100,
+                  current_time = None)
+
+# =========
+
+# drone3PIDx = PID(Kp=200, Kd=150, Ki=0.0,
+#                   derivativeFilterFreq=20,
+#                   minOutput = -100, maxOutput = 100,
+#                   current_time = None)
+
+# drone3PIDy = PID(Kp=400, Kd=170, Ki=0.0,
+#                   derivativeFilterFreq=15,
+#                   minOutput = -100, maxOutput = 100,
+#                   current_time = None)
+
+# drone3PIDz = PID(Kp=300, Kd=130, Ki=0.0,
+#                   derivativeFilterFreq=15,
+#                   minOutput = -100, maxOutput = 100,
+#                   current_time = None)
+
+# =======================================================
+
 for drone in allDrones:   
-    drone.connect()
+    drone.connect()  
     drone.takeoff()
 
-# PID Commands 
 
-UAV_1 = DronePID(minOutput = -100, maxOutput = 100, derivativeFilterFreq=15,
-                     PID_X = [200,0,150], PID_Y = [400,0,170], PID_Z = [300,0,130], current_time = None)
+rosClock.sleepForRate(3000)
 
-UAV_2 = DronePID(minOutput = -100, maxOutput = 100, derivativeFilterFreq=15,
-                     PID_X = [200,0,150], PID_Y = [400,0,170], PID_Z = [300,0,130], current_time = None)
+itr = 0
+max_itr = 1300
+itr_sw = 300
+Ts = 0.02 # sample time
 
-UAV_3 = DronePID(minOutput = -100, maxOutput = 100, derivativeFilterFreq=15,
-                     PID_X = [200,0,150], PID_Y = [400,0,170], PID_Z = [300,0,130], current_time = None)
-
-# For Drone 1
-present = [2,10,10]
-goal = [10,-20,12]
-
-
-# Take Off
-#----------------------------------------------------------------------------
-# Takes initial position and gives take off upto giveh height
-
-
-#UAV_1.UPDATE([1,-2,0], [1,-2,0.8])
-#UAV_2.UPDATE([2,2,0], [2,2,0.8])
-#UAV_3.UPDATE([2,-2,0], [2,-2,0.8])
-
-
-#Line Formation
-i = True
 try:
-    cur_pos = []
-    
-    while i :
-        for uav in GroundTruth:
-            print(uav.getPose()[0])
-            cur_pos.append(uav.getPose()[0])
+
+    while itr < max_itr:    
         
-        pos_error = LineFormation.form(0.2,0.2,0.2,cur_pos)
+        pos_curr = []
+        for drone in GroundTruth:   
+            pos = drone.getPose()[0]
+            print("pos of drone is: ",pos)
+            pos_curr.append(pos)
+              
         
+        error = LineFormation.form(0.6,0.6,0.0, pos_curr)
+        goal = []
+        for i in range(len(error)):
+            x = pos_curr[i+1][0] + error[i][0]
+            y = pos_curr[i+1][1] + error[i][1]
+            z = pos_curr[i+1][2] + error[i][2]
+            goal.append([x,y,z])
+        print("goal: ", goal)
+        
+        if itr > 700:
+            PIDvx1 = drone1PIDx.update(pos_curr[0][0], -1.0)
+            PIDvy1 = drone1PIDy.update(pos_curr[0][1], 0.0)
+            PIDvz1 = drone1PIDz.update(pos_curr[0][2], 0.8)
+            
+        else:    
+            PIDvx1 = drone1PIDx.update(pos_curr[0][0], 0.0)
+            PIDvy1 = drone1PIDy.update(pos_curr[0][1], 0.0)
+            PIDvz1 = drone1PIDz.update(pos_curr[0][2], 0.8)
+
+        PIDvx2 = drone2PIDx.update(pos_curr[1][0], goal[0][0])
+        PIDvy2 = drone2PIDy.update(pos_curr[1][1], goal[0][1])
+        PIDvz2 = drone2PIDz.update(pos_curr[1][2], goal[0][2])
+        
+        # PIDvx3 = drone3PIDx.update(pos_curr[2][0], ref3[0])
+        # PIDvy3 = drone3PIDy.update(pos_curr[2][1], ref3[1]) 
+        # PIDvz3 = drone3PIDz.update(pos_curr[2][2], ref3[2])
+        
+        
+
+        print('PIDv1:', PIDvx1, PIDvy1, PIDvz1)
+        print('PIDv2:', PIDvx2, PIDvy2, PIDvz2)
+        
+        # ================================================ 
+
+        
+        allDrones[0].cmdVelocity(PIDvx1, PIDvy1, PIDvz1, 0)
+        allDrones[1].cmdVelocity(PIDvx2, PIDvy2, PIDvz2, 0)
+        # allDrones[2].cmdVelocity(PIDvx3, PIDvy3, PIDvz3, 0)
+        
+        # rosClock.sleep(Ts)
+        rosClock.sleepForRate(1/Ts)
+        itr = itr+1
         
 except KeyboardInterrupt:
     
-    print("Stopped")
-    i = False
+    print('emergency interruption!; aborting all flights ...')   
+    for i in range(2):
+        for drone in allDrones:
+            drone.emergency()
+        rosClock.sleepForRate(10)      
+    pass
+
+else:
+
     for drone in allDrones:
         drone.land()
 
-        
-for drone in allDrones:
-    drone.Disconnect()
-
-
-
-
-
+   
+for drone in allDrones:   
+     drone.Disconnect()
 
 
 
