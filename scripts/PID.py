@@ -1,13 +1,11 @@
+  
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Thu Aug  5 17:51:22 2021
-
 @author: Mo
-
 Safe Autonomous Systems Lab (SAS Lab)
 Stevens Institute of Technology
-
 """
 
 import time
@@ -29,7 +27,6 @@ class PID:
         """
         TODO:
         
-
         Parameters
         ----------
         Kp : float
@@ -48,11 +45,9 @@ class PID:
             DESCRIPTION. The default is None.
         current_time : TYPE, optional
             DESCRIPTION. The default is None.
-
         Returns
         -------
         None.
-
         """
         
         self.Kp = Kp
@@ -82,7 +77,6 @@ class PID:
     def update(self, feedback_value, target_value, tracking_error=None, current_time=None):
         """
         
-
         Parameters
         ----------
         feedback_value : TYPE
@@ -93,38 +87,36 @@ class PID:
             DESCRIPTION. The default is None.
         current_time : TYPE, optional
             DESCRIPTION. The default is None.
-
         Returns
         -------
         TYPE
             DESCRIPTION.
-
         """
 
         
         
         # TOO: add if {dt>0 OR Ts} for updating the D term
         # what if feedback_value, target_value were not given
-        control_parameteres = []
-        for i in range(len(target_value)):    
-            
+        control_commands = []    
+        for i in range(len(feedback_value)):    
             current_time = current_time if current_time is not None else time.time()
             error = (target_value[i] - feedback_value[i]) if tracking_error is None else tracking_error
             dt = current_time - self.previousTime
-            
+            print("dts: ",dt)
             Pterm = self.Kp * error
+            print("Pterm: ",Pterm)
             Dterm = self.previousDterm/(1+dt*self.F) + (
                       self.Kd*self.F*(error - self.previousError))/(1+self.F*dt)
+            print("Dterm: ",Dterm)
             Iterm = self.Ki * 0.0
             self.current_time = current_time if current_time is not None else time.time()
             self.previousError = error
             self.previousDterm = Dterm
             self.previousTime  = current_time
             output = Pterm + Dterm + Iterm
-            control_parameteres.append(max(self.minOutput, min(self.maxOutput, output)))
-        return control_parameteres
-        
-        
+            control_commands.append(max(self.minOutput, min(self.maxOutput, output)))
+        return control_commands
+
 
 class DronePID:
 
