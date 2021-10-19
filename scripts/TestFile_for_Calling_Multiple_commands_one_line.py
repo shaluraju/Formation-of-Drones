@@ -9,7 +9,7 @@ drone_1 = DronePID(minOutput = -100, maxOutput = 100, derivativeFilterFreq=15,
                      #PID_X = [200,0,150], PID_Y = [400,0,170], PID_Z = [300,0,130], current_time = None)
 
 # For Drone 1
-present = [2,10,10]
+present = [1,20,14]
 goal = [10,-20,12]
 
 # For Drone 2
