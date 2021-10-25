@@ -8,7 +8,7 @@ Created on Mon Oct 11 22:03:04 2021
 from TelloServer import SWARM, Telloserver
 import numpy as np
 from Shape_vectors import LineFormation
-# import time
+import time
 from PID import PID
 
 wifi_interfaces = ["wlx9cefd5fb6d84",
@@ -55,6 +55,11 @@ for drone in allDrones:
 rosClock.sleepForRate(3000)
 
 i = 0
+itr = 0
+max_itr = 2000
+itr_sw = 300
+Ts = 0.02 # sample time
+theta = 0
 
 while i < 50: 
     
@@ -67,14 +72,12 @@ while i < 50:
     PIDvx1 = drone1PIDx.update(pos_curr[0][0], 0)
     PIDvy1 = drone1PIDy.update(pos_curr[0][1], -0.5)
     PIDvz1 = drone1PIDz.update(pos_curr[0][2], 0.8)
-    i += 1
-    rosClock.sleepForRate(1000)
+    
+    allDrones[0].cmdVelocity(PIDvx1, PIDvy1, PIDvz1, 0)
 
-itr = 0
-max_itr = 2000
-itr_sw = 300
-Ts = 0.02 # sample time
-theta = 0
+    i += 1
+    rosClock.sleepForRate(1/Ts)
+
 
 try:
 

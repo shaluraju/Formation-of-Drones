@@ -97,26 +97,23 @@ class PID:
         
         # TOO: add if {dt>0 OR Ts} for updating the D term
         # what if feedback_value, target_value were not given
-        control_commands = []    
-        for i in range(len(feedback_value)):    
-            current_time = current_time if current_time is not None else time.time()
-            error = (target_value[i] - feedback_value[i]) if tracking_error is None else tracking_error
-            dt = current_time - self.previousTime
-            print("dts: ",dt)
-            Pterm = self.Kp * error
-            print("Pterm: ",Pterm)
-            Dterm = self.previousDterm/(1+dt*self.F) + (
-                      self.Kd*self.F*(error - self.previousError))/(1+self.F*dt)
-            print("Dterm: ",Dterm)
-            Iterm = self.Ki * 0.0
-            self.current_time = current_time if current_time is not None else time.time()
-            self.previousError = error
-            self.previousDterm = Dterm
-            self.previousTime  = current_time
-            output = Pterm + Dterm + Iterm
-            control_commands.append(max(self.minOutput, min(self.maxOutput, output)))
-        return control_commands
-
+            
+            
+        current_time = current_time if current_time is not None else time.time()
+        error = (target_value - feedback_value) if tracking_error is None else tracking_error
+        dt = current_time - self.previousTime
+        
+        Pterm = self.Kp * error
+        Dterm = self.previousDterm/(1+dt*self.F) + (
+                  self.Kd*self.F*(error - self.previousError))/(1+self.F*dt)
+        Iterm = self.Ki * 0.0
+        self.current_time = current_time if current_time is not None else time.time()
+        self.previousError = error
+        self.previousDterm = Dterm
+        self.previousTime  = current_time
+        output = Pterm + Dterm + Iterm
+        return max(self.minOutput, min(self.maxOutput, output))
+    
 
 class DronePID:
 
