@@ -10,15 +10,16 @@ import numpy as np
 from Shape_vectors import LineFormation
 import time
 from PID import PID
+import matplotlib.pyplot as plt
 
 wifi_interfaces = ["wlx9cefd5fb6d84",
-                   "wlx9cefd5fb774c"
+                   #"wlx9cefd5fb774c"
                     #"wlx9cefd5faea28",
                    #"wlx9cefd5fae83e"
                    ]
 
 droneslist = ['Tello4',
-              'Tello1'
+              #'Tello1'
               #'Tello3'
              ]
 
@@ -59,9 +60,9 @@ itr = 0
 max_itr = 2000
 itr_sw = 300
 Ts = 0.02 # sample time
-theta = 0
+theta = 1
 
-while i < 50: 
+while i < 200: 
     
     pos_curr = []
     for drone in GroundTruth:   
@@ -78,31 +79,51 @@ while i < 50:
     i += 1
     rosClock.sleepForRate(1/Ts)
 
+rosClock.sleepForRate(3000)
 
 try:
-
-    while theta < 64:    
-        
+    leader_traj = LineFormation.full_rotation(pos_curr, 0.5)
+    
+    for i in range(len(leader_traj)):
         pos_curr = []
+        print("i: ", i)
+        print("Goal Position given: ", leader_traj[i])
         for drone in GroundTruth:   
             pos = drone.getPose()[0]
             print("pos of drone is: ",pos)
             pos_curr.append(pos)
-            
-        goal = LineFormation.d_rotation(pos_curr, 0.5, theta)
-
-        PIDvx1 = drone1PIDx.update(pos_curr[0][0], goal[0])
-        PIDvy1 = drone1PIDy.update(pos_curr[0][1], goal[1])
-        PIDvz1 = drone1PIDz.update(pos_curr[0][2], goal[2])
-        
-        
+   
+        PIDvx1 = drone1PIDx.update(pos_curr[0][0], leader_traj[i][0])
+        PIDvy1 = drone1PIDy.update(pos_curr[0][1], leader_traj[i][1])
+        PIDvz1 = drone1PIDz.update(pos_curr[0][2], leader_traj[i][2])
+    
         print('PIDv1:', PIDvx1, PIDvy1, PIDvz1)
         allDrones[0].cmdVelocity(PIDvx1, PIDvy1, PIDvz1, 0)
+        plt.plot(pos_curr[0][0],pos_curr[0][1],'ro')
+        rosClock.sleepForRate(1/0.02)
+    
 
-
+    #rosClock.sleepForRate(2000)
+    
+    
+    for i in range(200):
+        print("Going to home")
+        for drone in GroundTruth:   
+            pos = drone.getPose()[0]
+            print("pos of drone is: ",pos)
+            pos_curr.append(pos)
+        PIDvx1 = drone1PIDx.update(pos_curr[0][0], 0)
+        PIDvy1 = drone1PIDy.update(pos_curr[0][1], -0.5)
+        PIDvz1 = drone1PIDz.update(pos_curr[0][2], 0.8)
+    
+        allDrones[0].cmdVelocity(PIDvx1, PIDvy1, PIDvz1, 0)
         rosClock.sleepForRate(1/Ts)
-        theta += 1
+        
+    for drone in allDrones:
+        drone.land()
 
+    
+    
 except KeyboardInterrupt:
     
     print('emergency interruption!; aborting all flights ...')   
@@ -121,7 +142,7 @@ else:
 for drone in allDrones:   
      drone.Disconnect()
 
-
+plt.savefig('/home/sas-lab/catkin_ws/src/vicon_bridge/scripts/3rd_try.png') 
 
 
 
