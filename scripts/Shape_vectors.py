@@ -34,13 +34,14 @@ class LineFormation:
         # first drone is used to drive
         
         number_of_drones = len(uav_pos)
-        print(number_of_drones)
+        #print(number_of_drones)
         x = uav_pos[0][0] + (number_of_drones-1) * min_dist_x 
         y = uav_pos[0][1] + (number_of_drones-1) * min_dist_y
         z = uav_pos[0][2] + (number_of_drones-1) * min_dist_z
     
-        print(x,y,z)    
-        go_ahead = LineFormation.checkboundary([x,y,z])
+        #print(x,y,z)    
+        #go_ahead = LineFormation.checkboundary([x,y,z])
+        go_ahead = True
         
         if go_ahead == False:
             
@@ -92,31 +93,53 @@ class LineFormation:
         
         return [new_pos_x + add_x, new_pos_y + add_y, uav_pos[0][2]]
     
-    def d_rotation(uav_pos: list, min_dist: float, theta:float):
+    def full_rotation(uav_pos: list, min_dist: float):
         
-        add_x = math.sin(theta)*min_dist
-        #print(add_x)
-        add_y = math.cos(theta)*min_dist  
-        #print(add_y)
         
-        if theta < 1.5:   
-            print("x: ",uav_pos[0][0] + add_x, "y: ", -add_y)
-            return [uav_pos[0][0] + add_x, -add_y, uav_pos[0][2]]
-        
-        elif theta > 1.5 and theta < 3.1:
-            print("x: ",uav_pos[0][0] + add_x, "y: ", -add_y)
-            return [uav_pos[0][0] + add_x, -add_y, uav_pos[0][2]]
-        
-        elif theta > 3.1 and theta < 4.7:
-            print("x: ",uav_pos[0][0] + add_x, "y: ", -add_y)
-            return [uav_pos[0][0] + add_x, -add_y, uav_pos[0][2]]
-        
-        elif theta > 4.71 and theta < 6.3:
-            print("x: ", add_x, "y: ", -add_y)
-            return [add_x, -add_y, uav_pos[0][2]]
+    # This method returns the trajectory of leader during the full rotation
+    # i.e 360 degrees, given the starting position of all the drones
+        theta = 1
+        start_pos = uav_pos[0]
+        print("leader Pos: ",start_pos)
+        traj = []
+        while theta < 512:    
+        #print(theta)
+            tta = round(theta/80, 3)
+            #print("theta: ", theta)
+            #print(tta)
+            add_x = round( math.sin(tta)*min_dist, 2)
+            #print(add_x)
+            add_y = round( math.cos(tta)*min_dist, 2)  
+            #print(add_y)
+            
+            if tta < 1.5:   
+
+                leader_pos = [start_pos[0] + add_x, start_pos[1] + min_dist - add_y, start_pos[2]]
+                #print('1',leader_pos)
+                traj.append(leader_pos)
+            
+            elif tta > 1.4 and tta < 3.1:
+
+                leader_pos = [start_pos[0] + add_x, start_pos[1] + min_dist - add_y, start_pos[2]]
+                #print('2',leader_pos)
+                traj.append(leader_pos)
     
-    
+            elif tta > 3.0 and tta < 4.7:
+
+                leader_pos = [start_pos[0] + add_x, start_pos[1] + min_dist - add_y, start_pos[2]]
+                #print('3',leader_pos)
+                traj.append(leader_pos)
+            
+            elif tta > 4.6 and tta < 6.4:
+
+                leader_pos = [start_pos[0] + add_x, start_pos[1] + min_dist - add_y, start_pos[2]]
+                #print('4',leader_pos)
+                traj.append(leader_pos)
+            
+            theta += 1
+        return traj
         
+  
         
 
         
