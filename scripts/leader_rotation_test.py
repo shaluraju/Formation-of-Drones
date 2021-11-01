@@ -13,7 +13,6 @@ from PID import PID
 import matplotlib.pyplot as plt
 import timeit
 
-
 wifi_interfaces = ["wlx9cefd5fb6d84",
                    #"wlx9cefd5fb774c"
                     #"wlx9cefd5faea28",
@@ -64,76 +63,71 @@ itr_sw = 300
 Ts = 0.02 # sample time
 theta = 1
 
-while i < 300: 
+while i < 200: 
     
     pos_curr = []
     for drone in GroundTruth:   
         pos = drone.getPose()[0]
-        print("pos of drone is: ",pos)
+        #print("pos of drone is: ",pos)
         pos_curr.append(pos)
     
-    PIDvx1 = drone1PIDx.update(pos_curr[0][0], 0)
+    PIDvx1 = drone1PIDx.update(pos_curr[0][0], 0.0)
     PIDvy1 = drone1PIDy.update(pos_curr[0][1], -0.5)
-    PIDvz1 = drone1PIDz.update(pos_curr[0][2], 0.8)
-    
+    PIDvz1 = drone1PIDz.update(pos_curr[0][2], 0.7)
+    #print("PID: ", PIDvx1, PIDvy1,PIDvz1)
     allDrones[0].cmdVelocity(PIDvx1, PIDvy1, PIDvz1, 0)
 
     i += 1
     rosClock.sleepForRate(1/Ts)
 
-rosClock.sleepForRate(3000)
+rosClock.sleepForRate(1000)
 
 try:
-    
-    start_time  = timeit.timeit()    
     leader_traj = LineFormation.full_rotation(pos_curr, 0.5)
-    
-    round = 0
-    
-    while round < 3:
-        for i in leader_traj:
+    j = 0
+    rotation = 0
+    start_time = timeit.timeit()
+    while rotation < 3:
+        for i in range(len(leader_traj)):
             pos_curr = []
-            print("i: ", i)
-            print("Goal Position given: ", leader_traj[i])
+            #print("i: ", i)
+            #print("Goal Position given: ", leader_traj[i])
             for drone in GroundTruth:   
                 pos = drone.getPose()[0]
-                print("pos of drone is: ",pos)
+                #print("pos of drone is: ",pos)
                 pos_curr.append(pos)
        
             PIDvx1 = drone1PIDx.update(pos_curr[0][0], leader_traj[i][0])
             PIDvy1 = drone1PIDy.update(pos_curr[0][1], leader_traj[i][1])
             PIDvz1 = drone1PIDz.update(pos_curr[0][2], leader_traj[i][2])
         
-            print('PIDv1:', PIDvx1, PIDvy1, PIDvz1)
+            #print('PIDv1:', PIDvx1, PIDvy1, PIDvz1)
             allDrones[0].cmdVelocity(PIDvx1, PIDvy1, PIDvz1, 0)
             plt.plot(pos_curr[0][0],pos_curr[0][1],'ro')
-            rosClock.sleepForRate(1/0.2)
-        
+            rosClock.sleepForRate(1/0.03)
+   
     
-        #rosClock.sleepForRate(2000)
+        while j < 100: 
         
-        final_time = timeit.timeit()
-       
-        
-        for i in range(200):
-            print("Going to home")
+            pos_curr = []
             for drone in GroundTruth:   
                 pos = drone.getPose()[0]
-                print("pos of drone is: ",pos)
+                #print("pos of drone is: ",pos)
                 pos_curr.append(pos)
-            PIDvx1 = drone1PIDx.update(pos_curr[0][0], 0)
-            PIDvy1 = drone1PIDy.update(pos_curr[0][1], -0.5)
-            PIDvz1 = drone1PIDz.update(pos_curr[0][2], 0.8)
-        
-            allDrones[0].cmdVelocity(PIDvx1, PIDvy1, PIDvz1, 0)
-            rosClock.sleepForRate(1/Ts)
             
-        for drone in allDrones:
-            drone.land()
-        
-        print("Elapsed Time: ", start_time -final_time)
-        
-        round += 1
+            PIDvx1 = drone1PIDx.update(pos_curr[0][0], 0.0)
+            PIDvy1 = drone1PIDy.update(pos_curr[0][1], -0.5)
+            PIDvz1 = drone1PIDz.update(pos_curr[0][2], 0.7)
+            #print("PID: ", PIDvx1, PIDvy1,PIDvz1)
+            allDrones[0].cmdVelocity(PIDvx1, PIDvy1, PIDvz1, 0)
+            j += 1
+            rosClock.sleepForRate(1/0.025)
+        rotation += 1
+        end_time = timeit.timeit()
+    
+    print("Elapsed Time: ", end_time - start_time)
+    for drone in allDrones:
+        drone.land()
 
     
     
@@ -155,7 +149,7 @@ else:
 for drone in allDrones:   
      drone.Disconnect()
 
-plt.savefig('/home/sas-lab/catkin_ws/src/vicon_bridge/scripts/3rd_try.png') 
+plt.savefig('/home/sas-lab/catkin_ws/src/vicon_bridge/scripts/256steps_with_0025.png') 
 
 
 
