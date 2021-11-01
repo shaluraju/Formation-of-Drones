@@ -138,13 +138,15 @@ class LineFormation:
             
             theta += 1
         return traj
-        
+        s
   
         
 
         
         
-class Shape_the_Character:
+class Character:
+    
+    # This class is used to make a formation in the shape of characters
     
     def __init__(self):
         
@@ -157,8 +159,9 @@ class Shape_the_Character:
         y_limits = self.y_limits
         z_limits = self.z_limits
         
-    def L():
+    def form_L():
         
+        positions = []
         pass
 
         

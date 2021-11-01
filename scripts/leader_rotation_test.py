@@ -11,6 +11,8 @@ from Shape_vectors import LineFormation
 import time
 from PID import PID
 import matplotlib.pyplot as plt
+import timeit
+
 
 wifi_interfaces = ["wlx9cefd5fb6d84",
                    #"wlx9cefd5fb774c"
@@ -35,17 +37,17 @@ GroundTruth = swarm.MotionCaptureGroundTruth()
 
 drone1PIDx = PID(Kp=200, Kd=150, Ki=0.0,
                   derivativeFilterFreq=15,
-                  minOutput = -70, maxOutput = 70,
+                  minOutput = -100, maxOutput = 100,
                   current_time = None)
 
 drone1PIDy = PID(Kp=400, Kd=170, Ki=0.0,
                   derivativeFilterFreq=15,
-                  minOutput = -70, maxOutput = 70,
+                  minOutput = -100, maxOutput = 100,
                   current_time = None)
 
 drone1PIDz = PID(Kp=300, Kd=130, Ki=0.0,
                   derivativeFilterFreq=15,
-                  minOutput = -70, maxOutput = 70,
+                  minOutput = -100, maxOutput = 100,
                   current_time = None)
 
 for drone in allDrones:   
@@ -62,7 +64,7 @@ itr_sw = 300
 Ts = 0.02 # sample time
 theta = 1
 
-while i < 200: 
+while i < 300: 
     
     pos_curr = []
     for drone in GroundTruth:   
@@ -82,45 +84,56 @@ while i < 200:
 rosClock.sleepForRate(3000)
 
 try:
+    
+    start_time  = timeit.timeit()    
     leader_traj = LineFormation.full_rotation(pos_curr, 0.5)
     
-    for i in range(len(leader_traj)):
-        pos_curr = []
-        print("i: ", i)
-        print("Goal Position given: ", leader_traj[i])
-        for drone in GroundTruth:   
-            pos = drone.getPose()[0]
-            print("pos of drone is: ",pos)
-            pos_curr.append(pos)
-   
-        PIDvx1 = drone1PIDx.update(pos_curr[0][0], leader_traj[i][0])
-        PIDvy1 = drone1PIDy.update(pos_curr[0][1], leader_traj[i][1])
-        PIDvz1 = drone1PIDz.update(pos_curr[0][2], leader_traj[i][2])
+    round = 0
     
-        print('PIDv1:', PIDvx1, PIDvy1, PIDvz1)
-        allDrones[0].cmdVelocity(PIDvx1, PIDvy1, PIDvz1, 0)
-        plt.plot(pos_curr[0][0],pos_curr[0][1],'ro')
-        rosClock.sleepForRate(1/0.02)
-    
-
-    #rosClock.sleepForRate(2000)
-    
-    
-    for i in range(200):
-        print("Going to home")
-        for drone in GroundTruth:   
-            pos = drone.getPose()[0]
-            print("pos of drone is: ",pos)
-            pos_curr.append(pos)
-        PIDvx1 = drone1PIDx.update(pos_curr[0][0], 0)
-        PIDvy1 = drone1PIDy.update(pos_curr[0][1], -0.5)
-        PIDvz1 = drone1PIDz.update(pos_curr[0][2], 0.8)
-    
-        allDrones[0].cmdVelocity(PIDvx1, PIDvy1, PIDvz1, 0)
-        rosClock.sleepForRate(1/Ts)
+    while round < 3:
+        for i in leader_traj:
+            pos_curr = []
+            print("i: ", i)
+            print("Goal Position given: ", leader_traj[i])
+            for drone in GroundTruth:   
+                pos = drone.getPose()[0]
+                print("pos of drone is: ",pos)
+                pos_curr.append(pos)
+       
+            PIDvx1 = drone1PIDx.update(pos_curr[0][0], leader_traj[i][0])
+            PIDvy1 = drone1PIDy.update(pos_curr[0][1], leader_traj[i][1])
+            PIDvz1 = drone1PIDz.update(pos_curr[0][2], leader_traj[i][2])
         
-    for drone in allDrones:
-        drone.land()
+            print('PIDv1:', PIDvx1, PIDvy1, PIDvz1)
+            allDrones[0].cmdVelocity(PIDvx1, PIDvy1, PIDvz1, 0)
+            plt.plot(pos_curr[0][0],pos_curr[0][1],'ro')
+            rosClock.sleepForRate(1/0.2)
+        
+    
+        #rosClock.sleepForRate(2000)
+        
+        final_time = timeit.timeit()
+       
+        
+        for i in range(200):
+            print("Going to home")
+            for drone in GroundTruth:   
+                pos = drone.getPose()[0]
+                print("pos of drone is: ",pos)
+                pos_curr.append(pos)
+            PIDvx1 = drone1PIDx.update(pos_curr[0][0], 0)
+            PIDvy1 = drone1PIDy.update(pos_curr[0][1], -0.5)
+            PIDvz1 = drone1PIDz.update(pos_curr[0][2], 0.8)
+        
+            allDrones[0].cmdVelocity(PIDvx1, PIDvy1, PIDvz1, 0)
+            rosClock.sleepForRate(1/Ts)
+            
+        for drone in allDrones:
+            drone.land()
+        
+        print("Elapsed Time: ", start_time -final_time)
+        
+        round += 1
 
     
     
