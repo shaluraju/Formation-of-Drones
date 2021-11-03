@@ -99,7 +99,7 @@ class LineFormation:
     # This method returns the trajectory of leader during the full rotation
     # i.e 360 degrees, given the starting position of all the drones
         theta = 1
-        start_pos = uav_pos[0]
+        start_pos = uav_pos
         print("leader Pos: ",start_pos)
         traj = []
         while theta < 512:    
@@ -138,8 +138,7 @@ class LineFormation:
             
             theta += 1
         return traj
-        s
-  
+          
         
 
         
