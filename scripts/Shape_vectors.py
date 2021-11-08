@@ -163,7 +163,61 @@ class Character:
         positions = []
         pass
 
+
+
+    def final_positions(uav_pos: list, error: list):
         
+        """
+        Description:
+            
+            This method calculates the final positions of uav's
+            based on the error calculated from shape vectors.
+        """
+        
+        goal = []
+        
+        for i in range(len(error)):
+            
+            x = uav_pos[i+1][0] + error[i][0]
+            y = uav_pos[i+1][1] + error[i][1]
+            z = uav_pos[i+1][2] + error[i][2]
+            
+            goal.append([x,y,z])
+          
+        return goal
+        
+
+    def form_cross(uav_pos: list):
+        
+        """
+        Description:
+            
+            This method returns the final position of the 
+            drones of a formation shaped "cross" with exactly 
+            6 drones.
+            
+            if you want to use more drones, update their shape vectors
+        
+        """
+        if len(uav_pos) < 6:
+            print("Need atleast 6 Drones to perform Cross formation")
+            
+        else:
+            
+            error = []
+            shape_vect = [[0, 0.6, 0], [0, -0.6, 0], [0, 0, -0.4], [0, 0, 0.4], [0, 0, 0.8]] 
+            for i in range(len(uav_pos) - 1):
+                
+                x = uav_pos[0][0] - uav_pos[i+1][0] - shape_vect[i][0]
+                y = uav_pos[0][1] - uav_pos[i+1][1] - shape_vect[i][1]
+                z = uav_pos[0][2] - uav_pos[i+1][2] - shape_vect[i][2]
+                
+                error.append([x,y,z])
+            print("Erro b/w shape: ",error)
+            
+            PID_Array = Character.final_positions(uav_pos, error)
+            
+            return PID_Array
 
 
 
