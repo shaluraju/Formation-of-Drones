@@ -150,16 +150,16 @@ class LineFormation:
         
 class Character:
     
-    def __init__(self):
+    #def __init__(self):
         
-        self.x_limits = [-1.8,1.8]
-        self.y_limits = [-2.8,2.8]
-        self.z_limits = [0.3,2.3]
-        
-        
-        x_limits = self.x_limits
-        y_limits = self.y_limits
-        z_limits = self.z_limits
+#    self.x_limits = [-1.8,1.8]
+#    self.y_limits = [-2.8,2.8]
+#    self.z_limits = [0.3,2.3]
+    
+    
+    x_limits = [-1.8,1.8]
+    y_limits = [-2.8,2.8]
+    z_limits = [0.3,2.3]
         
     def final_positions(uav_pos: list, error: list):
         
@@ -187,7 +187,7 @@ class Character:
         
         """
         Description:range(len(
-            
+            xtra_drones[i]
             This method returns the final position of the 
             drones of a formation shaped "cross" with exactly 
             6 drones.
@@ -214,26 +214,7 @@ class Character:
             PID_Array = Character.final_positions(uav_pos, error)
             
             return PID_Array
-    
-    def form_A(uav_pos: list):
-        
-        if len(uav_pos) < 6:
-            print("Insufficient number of Drones")
-            
-        else:
-            leader = uav_pos[0]
-            
-            # Predefined Shape Vector
-            shape_vector = [[-0.2,0.5,0.5], [0,0.2,0], [0.2,0,-0.5], [0,-0.2,0], [-0.2,-0.5,0.5]]
-            
-            error = []
-            for i in range(len(shape_vector)):
-                
-                x = uav_pos[i][0] + shape_vector[i][0]
-                y = uav_pos[i][1] + shape_vector[i][1]
-                z = uav_pos[i][2] + shape_vector[i][2]
-                error.append([x,y,z])
-            return error
+
         
         
     def form_I(uav_pos: list, leader_pos: list, min_dist = [0.6,0.6,0.4]):
@@ -314,6 +295,89 @@ class Character:
             goal_position = path_planning.give_position(uav_pos, shape_vect)            
             return goal_position        
         
+    def form_A(uav_pos: list, leader_pos: list, min_dist = [0.4,0.4,0.45]):
+        """
+        This function makes a formation of shape A with pre-defined 
+        shape vectors and the leaders position in formation.
+        leader_pos = [0,0,1.0] suits better for given shape vector
+        
+        """
+        if len(uav_pos) < 6:
+            
+            print("Atleast 6 drones are required to form shape S")
+        
+        else:
+            shape_vect = []
+            extra_drones = uav_pos[6:]
+            shape_vect.append(leader_pos)
+            #position1 = leader_pos
+            position2 = [leader_pos[0], leader_pos[1] + min_dist[1], leader_pos[2]]
+            position3 = [leader_pos[0], leader_pos[1] - min_dist[1], leader_pos[2]]
+            
+            position4 = [leader_pos[0] + min_dist[0], leader_pos[1] + min_dist[1]*2, leader_pos[2] - min_dist[2]]
+            position5 = [leader_pos[0] + min_dist[0], leader_pos[1] - min_dist[1]*2, leader_pos[2] - min_dist[2]]
+
+            position6 = [leader_pos[0] - min_dist[0], leader_pos[1], leader_pos[2] + min_dist[2]]               
+            
+            shape_vect.append(position2)
+            shape_vect.append(position3)
+            shape_vect.append(position4)
+            shape_vect.append(position5)
+            shape_vect.append(position6)
+
+            for i in range(len(extra_drones)):
+                x = Character.x_limits[0] + 0.1
+                y = Character.y_limits[0] + (i+1)/2
+                z = 0.5
+                shape_vect.append([x,y,z])
+            #for g in range(len(uav_pos)):
+            print("Shape_Vect: ", shape_vect)
+            goal_position = path_planning.give_position(uav_pos, shape_vect) 
+            return goal_position
+
+
+    def form_S(uav_pos, leader_pos, min_dist = [0.4,0.4,0.45]):
+        """
+        This function makes a formation of shape S with pre-defined 
+        shape vectors and the leaders position in formation.
+        leader_pos = [0,0,1.0] suits better for given shape vector_limits
+        
+        """
+        if len(uav_pos) < 7:
+            
+            print("Atleast 7 drones are required to form shape S")
+        
+        else:
+            shape_vect = []
+            extra_drones = uav_pos[7:]
+            shape_vect.append(leader_pos)
+            #position1 = leader_pos
+            position2 = [leader_pos[0] + min_dist[0], leader_pos[1], leader_pos[2]- min_dist[2]]
+            position3 = [leader_pos[0] - min_dist[0], leader_pos[1], leader_pos[2]+ min_dist[2]]
+            
+            position4 = [leader_pos[0] + min_dist[0]/2, leader_pos[1] + min_dist[1], leader_pos[2] - min_dist[2]/2]
+            position5 = [leader_pos[0] - min_dist[0]/2, leader_pos[1] + min_dist[1], leader_pos[2] + min_dist[2]/1.5]
+
+            position6 = [leader_pos[0] + min_dist[0]/2, leader_pos[1] - min_dist[1], leader_pos[2] - min_dist[2]/1.5]
+            position7 = [leader_pos[0] - min_dist[0]/2, leader_pos[1] - min_dist[1], leader_pos[2] + min_dist[2]/2]            
+            
+            shape_vect.append(position2)
+            shape_vect.append(position3)
+            shape_vect.append(position4)
+            shape_vect.append(position5)
+            shape_vect.append(position6)
+            shape_vect.append(position7)
+            for i in range(len(extra_drones)):
+                x = Character.x_limits[0] + 0.1
+                y = Character.y_limits[0] + (i+1)/10
+                z = 0.5
+                
+                shape_vect.append([x,y,z])
+            #for g in range(len(uav_pos)):
+            print("Shape_Vect: ", shape_vect)
+            goal_position = path_planning.give_position(uav_pos, shape_vect) 
+            return goal_position
+
 
 
 class path_planning():
