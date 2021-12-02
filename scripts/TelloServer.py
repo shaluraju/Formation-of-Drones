@@ -123,10 +123,10 @@ class Telloserver:
 
                 for drone in allDrones:
                     idx = allDrones.index(drone)
-                    if altitude[idx] > 0.35:
+                    if altitude[idx] > 0.15:
                         
                         print("Current Altidute is: ", altitude)            
-                        landing_velocity = altitude[idx] * 70 if altitude[idx] < 1 else 70
+                        landing_velocity = altitude[idx] * 30 if altitude[idx] < 1 else 30
                         print("Trying to land: Landing Velocity is: ", landing_velocity)
                         drone.cmdVelocity(0,0,-landing_velocity,0)
                         #rosClock.sleepForRate(10)
