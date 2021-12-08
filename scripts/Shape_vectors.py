@@ -295,7 +295,7 @@ class Character:
             goal_position = path_planning.give_position(uav_pos, shape_vect)            
             return goal_position        
         
-    def form_A(uav_pos: list, leader_pos: list, min_dist = [0.4,0.4,0.45]):
+    def form_A(uav_pos: list, leader_pos: list, min_dist = [0.6,0.6,0.5]):
         """
         This function makes a formation of shape A with pre-defined 
         shape vectors and the leaders position in formation.
@@ -314,8 +314,8 @@ class Character:
             position2 = [leader_pos[0], leader_pos[1] + min_dist[1], leader_pos[2]]
             position3 = [leader_pos[0], leader_pos[1] - min_dist[1], leader_pos[2]]
             
-            position4 = [leader_pos[0] + min_dist[0], leader_pos[1] + min_dist[1]*2, leader_pos[2] - min_dist[2]]
-            position5 = [leader_pos[0] + min_dist[0], leader_pos[1] - min_dist[1]*2, leader_pos[2] - min_dist[2]]
+            position4 = [leader_pos[0] + min_dist[0], leader_pos[1] + min_dist[1]*1.6, leader_pos[2] - min_dist[2]]
+            position5 = [leader_pos[0] + min_dist[0], leader_pos[1] - min_dist[1]*1.6, leader_pos[2] - min_dist[2]]
 
             position6 = [leader_pos[0] - min_dist[0], leader_pos[1], leader_pos[2] + min_dist[2]]               
             
@@ -326,7 +326,7 @@ class Character:
             shape_vect.append(position6)
 
             for i in range(len(extra_drones)):
-                x = Character.x_limits[0] + 0.1
+                x = Character.x_limits[0] + 0.3
                 y = Character.y_limits[0] + (i+1)/2
                 z = 0.5
                 shape_vect.append([x,y,z])
@@ -336,7 +336,7 @@ class Character:
             return goal_position
 
 
-    def form_S(uav_pos, leader_pos, min_dist = [0.4,0.4,0.45]):
+    def form_S(uav_pos, leader_pos, min_dist = [0.6,0.6,0.65]):
         """
         This function makes a formation of shape S with pre-defined 
         shape vectors and the leaders position in formation.
