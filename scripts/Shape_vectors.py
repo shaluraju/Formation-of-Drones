@@ -24,7 +24,6 @@ class LineFormation:
             return False
         else:
             return True
-        c
     
     def form(min_dist_x: float, min_dist_y: float, min_dist_z: float, uav_pos: list) -> list:
         
@@ -60,9 +59,7 @@ class LineFormation:
                 
                 error.append([uav_x, uav_y, uav_z])
             return error
-    
-    
-    
+     
     
     def rotation(uav_pos: list, min_dist: float):
         # Returs the position of the leader drone on circumference
