@@ -3,6 +3,8 @@
 Created on Mon Sep 20 12:03:07 2021
 
 @author: shalu
+Flight Area = 4x6x2.5 m^3
+
 """
 import math
 import matplotlib.pyplot as plt
@@ -12,6 +14,12 @@ class LineFormation:
     
     
     def checkboundary(leader_goal: list):
+        
+        """
+        This method is checks whether the given position of a drone
+        falls within the boundary of the flight area
+        
+        """
         x_limits = [-1.8,1.8]
         y_limits = [-2.8,2.8]
         z_limits = [0.3,2.3]
@@ -25,8 +33,13 @@ class LineFormation:
         else:
             return True
     
+    
     def form(min_dist_x: float, min_dist_y: float, min_dist_z: float, uav_pos: list) -> list:
+        """
+        This method is used to make a line formation, 
+        the leader has to be at the left most corner.
         
+        """
 
         error = []
         #print("No of Drones: ", len(uav_pos))
@@ -61,44 +74,50 @@ class LineFormation:
             return error
      
     
-    def rotation(uav_pos: list, min_dist: float):
-        # Returs the position of the leader drone on circumference
-        midpoint = uav_pos[1] 
-        #radius = min_dist
+    # def rotation(uav_pos: list, min_dist: float):
+    #     """
+    #     This method is used to rotate the 2 drones with a radius 
+    #     of distance b/w the center drone to it.
         
-        original_dist = math.sqrt( (midpoint[0]-uav_pos[0][0])**2 + (midpoint[1]-uav_pos[0][1])**2 )
-        print("Original Dist: ", original_dist)
-        new_pos_x = uav_pos[0][0] + 0.1
-        new_pos_y = uav_pos[0][1] + 0.1
+    #     """
+    #     # Returs the position of the leader drone on circumference
+    #     midpoint = uav_pos[1] 
+    #     #radius = min_dist
         
-        print("new_pos_x = ",new_pos_x )
-        print("new_pos_y = ",new_pos_y )
+    #     original_dist = math.sqrt( (midpoint[0]-uav_pos[0][0])**2 + (midpoint[1]-uav_pos[0][1])**2 )
+    #     print("Original Dist: ", original_dist)
+    #     new_pos_x = uav_pos[0][0] + 0.1
+    #     new_pos_y = uav_pos[0][1] + 0.1
         
-        # Dist from Center
-        dist = math.sqrt( (midpoint[0]-new_pos_x)**2 + (midpoint[1]-new_pos_y)**2 )
-        print("adjacent: ", dist)
+    #     # print("new_pos_x = ",new_pos_x )
+    #     # print("new_pos_y = ",new_pos_y )
+        
+    #     # Dist from Center
+    #     dist = math.sqrt( (midpoint[0]-new_pos_x)**2 + (midpoint[1]-new_pos_y)**2 )
+    #     # print("adjacent: ", dist)
 
-        dist_bw_pos = math.sqrt( 2*0.1**2 )
+    #     dist_bw_pos = math.sqrt( 2*0.1**2 )
         
-        print("step Dist: ", dist_bw_pos)
-        theta = math.atan(dist_bw_pos/dist)
-        print("theta: ", theta)
-        relative_dist = min_dist - dist
-        print("relative dist: ", relative_dist)
+    #     # print("step Dist: ", dist_bw_pos)
+    #     theta = math.atan(dist_bw_pos/dist)
+    #     # print("theta: ", theta)
+    #     relative_dist = min_dist - dist
+    #     # print("relative dist: ", relative_dist)
 
-        add_x = math.sin(theta)*relative_dist
-        add_y = math.cos(theta)*relative_dist
+    #     add_x = math.sin(theta)*relative_dist
+    #     add_y = math.cos(theta)*relative_dist
         
-        print("after adding: ",new_pos_x+add_x)
-        print("after addinng: ",new_pos_y+add_y)
+    #     # print("after adding: ",new_pos_x+add_x)
+    #     # print("after addinng: ",new_pos_y+add_y)
         
-        return [new_pos_x + add_x, new_pos_y + add_y, uav_pos[0][2]]
+    #     return [new_pos_x + add_x, new_pos_y + add_y, uav_pos[0][2]]
     
     def full_rotation(uav_pos: list, min_dist: float):
         
-        
-    # This method returns the trajectory of leader during the full rotation
-    # i.e 360 degrees, given the starting position of all the drones
+        """
+         This method returns the trajectory of leader during the full rotation
+         i.e 360 degrees, given the starting position of all the drones
+        """
         theta = 1
         start_pos = uav_pos
         print("leader Pos: ",start_pos)
@@ -146,13 +165,7 @@ class LineFormation:
         
         
 class Character:
-    
-    #def __init__(self):
-        
-#    self.x_limits = [-1.8,1.8]
-#    self.y_limits = [-2.8,2.8]
-#    self.z_limits = [0.3,2.3]
-    
+       
     
     x_limits = [-1.8,1.8]
     y_limits = [-2.8,2.8]
@@ -183,13 +196,13 @@ class Character:
     def form_cross(uav_pos: list):
         
         """
-        Description:range(len(
-            xtra_drones[i]
+        Description:
+
             This method returns the final position of the 
             drones of a formation shaped "cross" with exactly 
             6 drones.
             
-            if you want to use more drones, update their shape vectors
+            if you want to use more drones, update the shape vector
         
         """
         if len(uav_pos) < 5:
@@ -216,6 +229,13 @@ class Character:
         
     def form_I(uav_pos: list, leader_pos: list, min_dist = [0.6,0.6,0.4]):
         
+        """
+        Description:
+
+            This method returns the final position of the 
+            drones of a formation shaped "I".
+        """
+        
         if len(uav_pos) < 2:
             
             print("Atleast 2 drones are required to form shape I")
@@ -239,10 +259,15 @@ class Character:
  
        
     def form_L(uav_pos: list, leader_pos: list, min_dist = [0.6,0.6,0.4]):
-        
+        """
+        Description:
+
+            This method returns the final position of the 
+            drones of a formation shaped "L".
+        """
         if len(uav_pos) < 3:
             
-            print("Atleast 3 drones are required to form shape I")
+            print("Atleast 3 drones are required to form shape L")
         
         else:
             
@@ -261,19 +286,21 @@ class Character:
             z = leader_pos[2] 
             shape_vect.append([x, y, z])
             #for g in range(len(uav_pos)):
-            print("Shape_Vect: ", shape_vect)
+            #print("Shape_Vect: ", shape_vect)
             goal_position = path_planning.give_position(uav_pos, shape_vect)            
             return goal_position       
  
        
     def form_Square(uav_pos: list, leader_pos: list, min_dist = [0.6,0.6,0.45]):
         """
+        Description:
 
-        
+            This method returns the final position of the 
+            drones of a formation shaped a "Square".
         """
         if len(uav_pos) < 4:
             
-            print("Atleast 4 drones are required to form shape I")
+            print("Atleast 4 drones are required to form a Square")
         
         else:
             
@@ -288,7 +315,7 @@ class Character:
             shape_vect.append(position3)
             shape_vect.append(position4)
             #for g in range(len(uav_pos)):
-            print("Shape_Vect: ", shape_vect)
+            #print("Shape_Vect: ", shape_vect)
             goal_position = path_planning.give_position(uav_pos, shape_vect)            
             return goal_position        
         
@@ -301,7 +328,7 @@ class Character:
         """
         if len(uav_pos) < 6:
             
-            print("Atleast 6 drones are required to form shape S")
+            print("Atleast 6 drones are required to form shape A")
         
         else:
             shape_vect = []
@@ -386,7 +413,7 @@ class Character:
         """
         if len(uav_pos) < 6:
             
-            print("Atleast 6 drones are required to form shape S")
+            print("Atleast 6 drones are required to form shape D")
         
         else:
             shape_vect = []
@@ -429,7 +456,7 @@ class Character:
         """
         if len(uav_pos) < 7:
             
-            print("Atleast 7 drones are required to form shape S")
+            print("Atleast 7 drones are required to form shape U")
         
         else:
             shape_vect = []
@@ -519,10 +546,12 @@ class path_planning():
         z_limits = self.z_limits
         
         
-        
-        
     def Hover(cur_pos:list, goal_pos: list):
         
+        """
+        This Method is used to Hover the drones when they are
+        not in a formation.
+        """
         drone_list = []
         for d in goal_pos:
             if d[2] < 0.55 or d[2] > 1.5:
@@ -542,7 +571,7 @@ class path_planning():
         """
         This Function Calculates the distance between a drone 
         and the new positions in the formation for all the drones
-        and returns the locations of min position to the corresponding
+        and returns the locations of min positions to the corresponding
         drones in the list order.
         
         """
