@@ -3,15 +3,9 @@
 """
 Created on Sun Nov  7 14:35:24 2021
 
-@author: sas-lab
+@author: Shalu
 """
 
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 20 10:20:41 2021
-
-@author: sssha
-"""
 from TelloServer import SWARM, Telloserver
 import numpy as np
 from Shape_vectors import LineFormation, Character
@@ -20,6 +14,12 @@ from PID import PID
 import matplotlib.pyplot as plt
 
 #import timeit
+
+"""
+Tello Drones are connected to wifi dongles thus, their interface
+id's are defined here so that, the control commands are sent to
+correct drone.  
+"""
 
 wifi_interfaces = ["wls1",
                    "wlx9cefd5fb6d70",

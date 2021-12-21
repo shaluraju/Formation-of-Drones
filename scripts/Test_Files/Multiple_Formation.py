@@ -14,6 +14,11 @@ from PID import PID
 import matplotlib.pyplot as plt
 
 #import timeit
+"""
+Tello Drones are connected to wifi dongles thus, their interface
+id's are defined here so that, the control commands are sent to
+correct drone.  
+"""
 
 wifi_interfaces = ["wlx9cefd5fb6d70",
                    "wlx9cefd5fb71cc",
