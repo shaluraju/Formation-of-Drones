@@ -16,7 +16,7 @@ class LineFormation:
     def checkboundary(leader_goal: list):
         
         """
-        This method is checks whether the given position of a drone
+        This method checks whether the given position of a drone
         falls within the boundary of the flight area
         
         """
@@ -159,9 +159,6 @@ class LineFormation:
             theta += 1
         return traj
         
-  
-        
-
         
         
 class Character:
