@@ -2,7 +2,7 @@
 """
 Created on Wed Oct 20 10:20:41 2021
 
-@author: sssha
+@author: Shalu
 """
 from TelloServer import SWARM, Telloserver
 import numpy as np
