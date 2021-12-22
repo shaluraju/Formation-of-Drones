@@ -22,7 +22,7 @@ This repository contains code of the Decentralized Formation Control of Drones w
 
 ![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/67613439/147017674-b5056dce-cfd7-4bf1-8b1d-98bd23ea2509.gif)
 
-## Contributor:
+## Contributors:
 * [Mohammad](https://github.com/m-bahrami)
 #### Mohammmad is a Phd Student, currently working in [SAS Lab](https://saslabstevens.github.io/), This Project is build on top of his PID Control Code.
 #### Thanks to Professor [Hamid](https://faculty.stevens.edu/hjafarne) for guiding me throughout the Project.
