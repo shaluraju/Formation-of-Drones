@@ -11,7 +11,7 @@ This repository contains code of the Decentralized Formation Control of Drones w
 * [Decentralized Formation Control](https://ieeexplore.ieee.org/document/6225196)
 
 
-####Bunch of drones are used to form a specified shape(Mostly Characters). Shape Vectors between the drones are predefined and Control Commands are given to minimize the error between the shape vectors. 
+#### Bunch of drones are used to form a specified shape(Mostly Characters). Shape Vectors between the drones are predefined and Control Commands are given to minimize the error between the shape vectors. 
 
 
 
