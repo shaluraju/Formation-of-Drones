@@ -15,4 +15,7 @@ This repository contains code of the Decentralized Formation Control of Drones w
 #### Bunch of drones are used to form a specified shape(Mostly Characters). Shape Vectors between the drones are predefined and Control Commands are given to minimize the error between the shape vectors. PID gains are used to control the motion of the drones.
 
 
+### With Lights:
 
+
+![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/67613439/147017459-ba61ee55-6197-4f99-b1aa-1ca57423093c.gif)
