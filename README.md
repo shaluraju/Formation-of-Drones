@@ -1,5 +1,5 @@
 # Formation of Drones
-This repository contains code of the Decentralized Formation Control of Drones which was programmed and tested in Safe Autonomous Systems Lab([SAS](https://saslabstevens.github.io/)), Stevens Institue of Technology. This is Hardware Implementation of my [Simulated](https://github.com/shaluraju/Decentralized-Formation-Control-of-UAVs-in-AirSim) Project, several changes were made to the control algorithms to match with the Hardware Components in available in SAS Lab
+This repository contains code of the Decentralized Formation Control of Drones which was programmed and tested in Safe Autonomous Systems Lab([SAS](https://saslabstevens.github.io/)), Stevens Institue of Technology. This is a Hardware Implementation of my [Simulated](https://github.com/shaluraju/Decentralized-Formation-Control-of-UAVs-in-AirSim) Project, several changes were made to the control algorithms to match with the Hardware Components that are available in the Lab
 
 [Ful Video](https://www.youtube.com/watch?v=aNUTGayBirw)
 
