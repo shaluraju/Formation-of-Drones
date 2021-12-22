@@ -18,4 +18,5 @@ This repository contains code of the Decentralized Formation Control of Drones w
 ### With Lights:
 
 
-![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/67613439/147017459-ba61ee55-6197-4f99-b1aa-1ca57423093c.gif)
+
+![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/67613439/147017674-b5056dce-cfd7-4bf1-8b1d-98bd23ea2509.gif)
