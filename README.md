@@ -10,7 +10,7 @@ This repository contains code of the Decentralized Formation Control of Drones w
 * [Tello Drone](https://www.ryzerobotics.com/tello)
 * ROS with Python 3
 * [Vicon](https://github.com/ethz-asl/vicon_bridge)
-* [Decentralized Formation Control](https://ieeexplore.ieee.org/document/6225196)
+* [Formation Control](https://ieeexplore.ieee.org/document/6225196)
 
 
 #### Bunch of drones are used to form a specified shape(Mostly Characters). Shape Vectors between the drones are predefined and Control Commands are given to minimize the error between the shape vectors. PID gains are used to control the motion of the drones.
